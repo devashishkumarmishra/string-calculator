@@ -1,3 +1,5 @@
+import re
+
 # Handle normal numbers & comma (,) between numbers (instead of commas).
 
 def add(numbers: str) -> int:
@@ -13,8 +15,6 @@ print(add("1,2,3")) #
 ###########################################################
 
 # Handle new lines (\n) between numbers (instead of commas).
-
-import re
 
 def add(numbers: str) -> int:
     if not numbers:
@@ -32,26 +32,31 @@ def add(numbers: str) -> int:
     if not numbers:
         return 0
 
+    # Default delimiters
+    delimiter = ",|\n"
+
+    # Check for custom delimiter
     if numbers.startswith("//"):
         parts = numbers.split("\n", 1)
-        delimiter = parts[0][2:]
+        delimiter = re.escape(parts[0][2:])  # Escape special characters in delimiter
         numbers = parts[1]
-    else:
-        delimiter = ",|\n"
 
-    return sum(map(int, re.split(delimiter, numbers)))
+    # Split numbers and remove empty strings
+    num_list = [num for num in re.split(delimiter, numbers) if num]
 
-print(add("1\n2,3"))
-print(add("//;\n1;2"))
-print(add("//|\n1|2|3"))
+    return sum(map(int, num_list))
+
+# Test cases
+print(add("1\n2,3"))     # Output: 6
+print(add("//;\n1;2"))   # Output: 3
+print(add("//|\n1|2|3")) # Output: 6
+
 
 
 ###########################################################
 ###########################################################
 
 # negative number are not allowed getting exception error
-
-import re
 
 def add(numbers: str) -> int:
     if not numbers:
@@ -86,8 +91,6 @@ except ValueError as e:
 ###########################################################
 
 # Numbers bigger than 1000 should be ignored
-
-import re
 
 def add(numbers: str) -> int:
     if not numbers:
